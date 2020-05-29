@@ -12,3 +12,12 @@ body {
 /* #unmute-button {
   background-color: white !important;
 } */
+
+.bgOne {
+  background-color: blue;
+  width: 100px;
+  height: 100px;
+  transition-property: background-color;
+  transition-duration: 5s;
+  opacity: 1;
+}

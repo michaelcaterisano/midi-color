@@ -172,7 +172,7 @@ async function draw() {
 
         //********************** CMYK COLOR ************************/
         const cmykVar = scale(note.midi, 55, 72, 0, 100);
-        const rgb = convert.cmyk.rgb([0, 100 - cmykVar, 62, 0]);
+        const rgb = convert.cmyk.rgb([50, 100 - cmykVar, 62, 0]);
         element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 
         //********************** LAB COLOR ************************/
@@ -242,21 +242,70 @@ function replay() {
 }
 
 //-----------------------------------------------------------------------
+
 // start transport
+let overlayRGB = convert.cmyk.rgb([0, 100, 62, 0]);
+const overlayStyle = `
+position: absolute;
+background-color: rgb(${overlayRGB[0]}, ${overlayRGB[1]}, ${overlayRGB[2]});
+  width: 100%;
+  height: 100%;
+
+  opacity: .2;
+`;
+
+const underlayStyle = `
+background-color: white;
+width: 100%;
+height: 100%;
+position: absolute;
+opacity: 1; 
+`;
 function start() {
   const unmuteButton = document.querySelector("#unmute-button");
 
   //unmuteButton.click();
   appContainer.removeChild(startButton);
+
+  const underlay = document.createElement("div");
+  underlay.style = underlayStyle;
+  // appContainer.appendChild(underlay);
+
   appContainer.appendChild(containerGrid);
   containerGrid.appendChild(gridTwo);
   containerGrid.appendChild(gridOne);
+
+  const overlay = document.createElement("div");
+  appContainer.appendChild(overlay);
+  overlay.style = overlayStyle;
+
+  setTimeout(() => {
+    let overlayRGB = convert.cmyk.rgb([100, 100, 62, 0]);
+
+    overlay.style = `
+    position: absolute;
+    background-color: rgb(${overlayRGB[0]}, ${overlayRGB[1]}, ${overlayRGB[2]});
+      width: 100%;
+      height: 100%;
+      transition-property: background-color opacity;
+      transition-duration: 5s;
+      opacity: .2;
+    `;
+  }, 1000);
 
   setTimeout(() => {
     console.log("done");
     appContainer.removeChild(containerGrid);
     appContainer.appendChild(replayButton);
   }, player.buffer.duration * 1000);
+
+  // setInterval(() => {
+  //   overlay.style = `background-color: cmyk(50, 0, 50, 0);
+  //   width: 100%;
+  //   height: 100%;
+  //   position: absolute;
+  //   opacity: 0.5;`;
+  // }, 1);
 
   //
 
