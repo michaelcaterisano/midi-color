@@ -6,6 +6,7 @@ import { Draw } from "tone";
 import { Transport } from "tone";
 // import UnmuteButton from "unmute";
 import mobile from "is-mobile";
+import convert from "color-convert";
 
 const height = mobile() ? window.innerHeight + "px" : "100vh";
 
@@ -142,6 +143,7 @@ function scale(value, inMin, inMax, outMin, outMax) {
 //-----------------------------------------------------------------------
 // schedule drawing based on midi note times
 async function draw() {
+  //
   // get midi data
   const keysOne = await Midi.fromUrl("./midi/bachKeys1.mid");
   const keysTwo = await Midi.fromUrl("./midi/bachKeys2.mid");
@@ -161,10 +163,24 @@ async function draw() {
         const row = Math.floor(scale(note.midi, 55, 72, 1, 18));
         element.style.gridArea = `1 / ${row}/ 19 / ${row}`;
 
-        const hue = scale(note.midi, 55, 72, 240, 300);
-        const saturation = 100;
-        const lightness = scale(note.midi, 55, 72, 40, 50);
-        element.style.background = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        //********************** HSL COLOR ************************/
+
+        // const hue = scale(note.midi, 55, 72, 240, 300);
+        // const saturation = 100;
+        // const lightness = scale(note.midi, 55, 72, 40, 50);
+        // element.style.background = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
+        //********************** CMYK COLOR ************************/
+        const cmykVar = scale(note.midi, 55, 72, 0, 100);
+        const rgb = convert.cmyk.rgb([0, 100 - cmykVar, 62, 0]);
+        element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+
+        //********************** LAB COLOR ************************/
+        // const labVariant = scale(note.midi, 55, 72, -128, 128);
+        // const rgb = convert.lab.rgb([80, -69, labVariant]);
+        // console.log(labVariant);
+        // element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+
         gridOne.appendChild(element);
 
         // schedule remove element after note duration
@@ -185,10 +201,23 @@ async function draw() {
         const row = Math.floor(scale(note.midi, 55, 72, 1, 18));
         element.style.gridArea = `1 / ${row}/ 19 / ${row}`;
 
-        const hue = scale(note.midi, 55, 72, 0, 70);
-        const saturation = 100;
-        const lightness = scale(note.midi, 55, 72, 40, 50);
-        element.style.background = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        //********************** HSL COLOR ************************/
+        // const hue = scale(note.midi, 55, 72, 0, 70);
+        // const saturation = 100;
+        // const lightness = scale(note.midi, 55, 72, 40, 50);
+        // element.style.background = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
+        //********************** CMYK COLOR ************************/
+
+        const cmykVar = scale(note.midi, 55, 72, 0, 100);
+        const rgb = convert.cmyk.rgb([0, 100 - cmykVar, 62, 0]);
+        element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+
+        //********************** LAB COLOR ************************/
+
+        // const labLightness = scale(note.midi, 55, 72, 0, 100);
+        // const rgb = convert.lab.rgb([labLightness, 46, 70]);
+        // element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
         gridTwo.appendChild(element);
 
         // schedule remove element after note duration
@@ -243,3 +272,13 @@ function start() {
 
   document.body.removeChild(unmuteButton);
 }
+
+//
+// const pianoTrack = visualizerSquare({ vertical, pathToFiles, colorScheme }); // // get all starts and store that in Set
+
+// containerGrid.appendChild(pianoTrack); // return container element
+// then can append
+
+// path to midi file, vertical/horizontal/all
+
+//
