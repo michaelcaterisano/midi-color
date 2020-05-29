@@ -172,8 +172,9 @@ async function draw() {
 
         //********************** CMYK COLOR ************************/
         const cmykVar = scale(note.midi, 55, 72, 0, 100);
-        const rgb = convert.cmyk.rgb([50, 100 - cmykVar, 62, 0]);
+        const rgb = convert.cmyk.rgb([100, 100 - cmykVar, 62, 0]);
         element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        element.style.mixBlendMode = "difference";
 
         //********************** LAB COLOR ************************/
         // const labVariant = scale(note.midi, 55, 72, -128, 128);
@@ -212,6 +213,7 @@ async function draw() {
         const cmykVar = scale(note.midi, 55, 72, 0, 100);
         const rgb = convert.cmyk.rgb([0, 100 - cmykVar, 62, 0]);
         element.style.background = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        element.style.mixBlendMode = "color-dodge";
 
         //********************** LAB COLOR ************************/
 
@@ -251,7 +253,7 @@ background-color: rgb(${overlayRGB[0]}, ${overlayRGB[1]}, ${overlayRGB[2]});
   width: 100%;
   height: 100%;
 
-  opacity: .2;
+  opacity: 1;
 `;
 
 const underlayStyle = `
@@ -268,30 +270,12 @@ function start() {
   appContainer.removeChild(startButton);
 
   const underlay = document.createElement("div");
-  underlay.style = underlayStyle;
-  // appContainer.appendChild(underlay);
+  appContainer.appendChild(underlay);
+  underlay.style = overlayStyle;
 
   appContainer.appendChild(containerGrid);
   containerGrid.appendChild(gridTwo);
   containerGrid.appendChild(gridOne);
-
-  const overlay = document.createElement("div");
-  appContainer.appendChild(overlay);
-  overlay.style = overlayStyle;
-
-  setTimeout(() => {
-    let overlayRGB = convert.cmyk.rgb([100, 100, 62, 0]);
-
-    overlay.style = `
-    position: absolute;
-    background-color: rgb(${overlayRGB[0]}, ${overlayRGB[1]}, ${overlayRGB[2]});
-      width: 100%;
-      height: 100%;
-      transition-property: background-color opacity;
-      transition-duration: 5s;
-      opacity: .2;
-    `;
-  }, 1000);
 
   setTimeout(() => {
     console.log("done");
